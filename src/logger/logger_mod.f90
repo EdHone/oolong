@@ -4,6 +4,7 @@ module logger_mod
     use, intrinsic :: iso_fortran_env, only : output_unit, error_unit
 
     use colour_mod, only: change_colour, COLOUR_WHITE, COLOUR_GREY
+    use levels_mod, only: logger_level_is_valid, get_log_level_str, level_is_err
 
     implicit none
 
@@ -28,15 +29,23 @@ module logger_mod
 contains
 
     !> Constructor for the logger object
-    function logger_constructor(id, colour) result(self)
+    function logger_constructor(level, id, colour) result(self)
 
         implicit none
 
-        type(logger_type) :: self
+        type(logger_type)                      :: self
+        integer,                    intent(in) :: level
         character(len=*), optional, intent(in) :: id
         integer,          optional, intent(in) :: colour
 
-        self%log_level = 100
+        if (logger_level_is_valid(level)) then
+            self%log_level = level
+        else
+            write(error_unit, '(A)') &
+                "ERROR - oolong__logger_mod_45: Invalid choice for log_level"
+            stop 1
+        end if
+
         self%output_stream = output_unit
         self%outputs_to_term = isatty(self%output_stream)
 
@@ -61,6 +70,10 @@ contains
         character(len=32)  :: info_str
         character(len=128) :: fmt_dt_str, fmt_info_str
 
+        integer :: log_out
+
+        if (self%log_level > level) return
+
         dt_str = datetime_string()
         info_str = self%format_info()
 
@@ -70,7 +83,13 @@ contains
             fmt_dt_str = dt_str
         end if
 
-        write ( self%output_stream, '("[", A,"]" A, ": ", A)' ) &
+        if (level_is_err(level)) then
+            log_out = error_unit
+        else
+            log_out = self%output_stream
+        end if
+
+        write ( log_out, '("[", A,"]" A, ": ", A)' ) &
             trim(fmt_dt_str), trim(info_str), trim(message)
 
     end subroutine event
@@ -87,14 +106,16 @@ contains
         character(len=32) :: result_string, fmt_tag_str
 
         if (trim(self%id) == "None") then
-            write( result_string, '(" ", A)' ) "TEST"
+            write( result_string, '(" ", A)' ) &
+                trim(get_log_level_str(self%log_level))
         else
             if (self%outputs_to_term) then
                 fmt_tag_str = change_colour(trim(self%id), self%colour_tag)
             else
                 fmt_tag_str = trim(self%id)
             end if
-            write( result_string, '("[", A,"] ", A)' ) trim(fmt_tag_str), "TEST"
+            write( result_string, '("[", A,"] ", A)' ) &
+                trim(fmt_tag_str), trim(get_log_level_str(self%log_level))
         end if
 
     end function format_info

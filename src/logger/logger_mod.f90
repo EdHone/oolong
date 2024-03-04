@@ -1,3 +1,4 @@
+!> Module containing an flexible logger class
 module logger_mod
 
     use, intrinsic :: iso_fortran_env, only : output_unit, error_unit
@@ -21,6 +22,7 @@ module logger_mod
 
 contains
 
+    !> Constructor for the logger object
     function logger_constructor(id) result(self)
 
         implicit none
@@ -35,6 +37,10 @@ contains
 
     end function logger_constructor
 
+    !> Calls a logging event
+    !!
+    !> param[in] message The message to be logged
+    !> param[in] level   The level to be logged at
     subroutine event(self, message, level)
 
         implicit none
@@ -54,6 +60,9 @@ contains
 
     end subroutine event
 
+    !> Formats information about this logger object ready for output
+    !!
+    !> return Character array of length 32
     function format_info(self) result(result_string)
 
         implicit none
@@ -70,6 +79,9 @@ contains
 
     end function format_info
 
+    !> Gets formatted date/time information from iso_fortran_env
+    !!
+    !> return Character array of length 25
     function datetime_string() result(result_string)
 
         implicit none

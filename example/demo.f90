@@ -4,16 +4,15 @@ use oolong, only: logger_type
 
 implicit none
 
-type(logger_type) :: log
+type(logger_type) :: log, log1, log2
+integer :: TEST_LEVEL = 100
 
-print*, "Put some examples in here!"
+log = logger_type()
+log1 = logger_type(id = "Foo")
+log2 = logger_type(id = "Bar")
 
-log = logger_type(id = "Moon")
-
-call log%event("Hello", 100)
-call log%event("how", 100)
-call log%event("are", 100)
-call log%event("you", 100)
-call log%event("today", 100)
+call log%event("Hello", TEST_LEVEL)
+call log1%event("Hello from Logger 1", TEST_LEVEL)
+call log2%event("Hello from Logger 2", TEST_LEVEL)
 
 end program demo

@@ -1,16 +1,18 @@
 name = "oolong"
 version = "0.1.0"
-license = "license"
-author = "EdHone"
-maintainer = "jane.doe@example.com"
-copyright = "Copyright 2024, EdHone"
+license = "BSD 3-Clause"
+author = "Ed Hone"
+copyright = "Copyright 2024, Ed Hone"
+
 [build]
 auto-executables = true
 auto-tests = true
 auto-examples = true
 module-naming = false
+
 [install]
 library = false
+
 [fortran]
 implicit-typing = false
 implicit-external = false

@@ -15,6 +15,7 @@ module logger_mod
         integer           :: log_level
         integer           :: output_stream
         integer           :: colour_tag = COLOUR_WHITE
+        logical           :: outputs_to_term
     contains
         procedure, public :: event
         procedure         :: format_info
@@ -37,6 +38,7 @@ contains
 
         self%log_level = 100
         self%output_stream = output_unit
+        self%outputs_to_term = isatty(self%output_stream)
 
         if (present(id)) self%id = trim(id)
         if (present(colour)) self%colour_tag = colour
@@ -57,15 +59,19 @@ contains
 
         character(len=25)  :: dt_str
         character(len=32)  :: info_str
-        character(len=128) :: colour_dt_str, colour_info_str
+        character(len=128) :: fmt_dt_str, fmt_info_str
 
         dt_str = datetime_string()
         info_str = self%format_info()
 
-        colour_dt_str = change_colour(dt_str, COLOUR_GREY)
+        if (self%outputs_to_term) then
+            fmt_dt_str = change_colour(dt_str, COLOUR_GREY)
+        else
+            fmt_dt_str = dt_str
+        end if
 
         write ( self%output_stream, '("[", A,"]" A, ": ", A)' ) &
-            trim(colour_dt_str), trim(info_str), trim(message)
+            trim(fmt_dt_str), trim(info_str), trim(message)
 
     end subroutine event
 
@@ -78,13 +84,17 @@ contains
 
         class(logger_type), intent(inout) :: self
 
-        character(len=32) :: result_string, colour_tag_str
+        character(len=32) :: result_string, fmt_tag_str
 
         if (trim(self%id) == "None") then
             write( result_string, '(" ", A)' ) "TEST"
         else
-            colour_tag_str = change_colour(trim(self%id), self%colour_tag)
-            write( result_string, '("[", A,"] ", A)' ) trim(colour_tag_str), "TEST"
+            if (self%outputs_to_term) then
+                fmt_tag_str = change_colour(trim(self%id), self%colour_tag)
+            else
+                fmt_tag_str = trim(self%id)
+            end if
+            write( result_string, '("[", A,"] ", A)' ) trim(fmt_tag_str), "TEST"
         end if
 
     end function format_info

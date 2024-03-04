@@ -107,7 +107,9 @@ contains
         write ( log_out, '("[", A,"]" A, ": ", A)' ) &
             trim(fmt_dt_str), trim(info_str), trim(message)
 
-        if (level >= self%stop_level) call self%all_stop()
+        if (level >= self%stop_level .and. level_is_err(level)) then
+            call self%all_stop()
+        end if
 
     end subroutine event
 

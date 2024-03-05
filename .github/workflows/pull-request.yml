@@ -1,0 +1,33 @@
+name: pull-request
+
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Install build dependencies
+      - name: Install build dependencies
+        run: |
+          git clone -c feature.manyFiles=true https://github.com/spack/spack.git
+          cd spack/bin
+          ./spack install fpm
+          ./spack load fpm
+
+      # Build oolong
+      - name: Build Oolong with FPM
+        run: fpm build
+
+      # Run tests
+      - name: Test Oolong with FPM
+        run: fpm test

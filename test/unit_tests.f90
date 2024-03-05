@@ -4,6 +4,8 @@ program unit_tests
 
     use testdrive,    only: run_testsuite, new_testsuite, testsuite_type
     use logger_tests, only: collect_logger_tests
+    use colour_tests, only: collect_colour_tests
+    use levels_tests, only: collect_levels_tests
 
     implicit none
 
@@ -14,7 +16,9 @@ program unit_tests
     stat = 0
 
     test_suites = [ &
-        new_testsuite("logger_tests", collect_logger_tests) &
+        new_testsuite("logger_tests", collect_logger_tests), &
+        new_testsuite("colour_tests", collect_colour_tests), &
+        new_testsuite("levels_tests", collect_levels_tests) &
         ]
 
     do i = 1, size(test_suites)

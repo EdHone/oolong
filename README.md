@@ -8,7 +8,15 @@ Oolong is an object oriented logging system for modern Fortran. The aim of this 
 The project uses the [Fortran package manager (FPM)](https://github.com/fortran-lang/fpm) as a build system. Simply install FPM and use ```fpm build``` to build the oolong library. An example of the functionality of offer can be run with ```fpm run --example``` and the test suite can be run with ```fpm test```.
 
 ### Installation
-To install Oolong as a static library, run ```fpm install --prefix .```
+To install Oolong as a static library, run
+```
+fpm install --prefix .
+```
+Additionally, installation can be achieved with Spack for users that want to bypass FPM as an immediate dependency. This can be achieved by running:
+```shell
+spack repo add .spack
+spack install oolong
+```
 
 ## Usage
 The Oolong logging system can be used from within a Fortran application. The minimum amount of code needed to get started is shown below:

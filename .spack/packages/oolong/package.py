@@ -27,8 +27,8 @@ import subprocess
 class Oolong(Package):
     """An object oriented logging system for modern Fortran applications."""
 
-    homepage = "https://github.com/EdHone/oolong"
-    url = "https://github.com/EdHone/oolong"
+    homepage = "https://github.com/EdHone/oolong.git"
+    url = "https://github.com/EdHone/oolong.git"
 
     maintainers("EdHone")
 

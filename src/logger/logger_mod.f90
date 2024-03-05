@@ -71,8 +71,8 @@ contains
 
     !> Calls a logging event
     !!
-    !> param[in] message The message to be logged
-    !> param[in] level   The level to be logged at
+    !> @param[in] message The message to be logged
+    !> @param[in] level   The level to be logged at
     subroutine event(self, message, level)
 
         implicit none

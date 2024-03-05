@@ -18,7 +18,6 @@ jobs:
 
       # Install build dependencies
       - name: Install build dependencies
-        if: ${{ matrix.build == 'fpm' }}
         uses: fortran-lang/setup-fpm@v3
         with:
           fpm-version: 'v0.8.0'

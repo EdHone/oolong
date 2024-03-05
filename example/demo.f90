@@ -7,7 +7,7 @@ implicit none
 
 type(logger_type) :: log, log1, log2
 
-log = logger_type(LEVEL_INFO, stop_level=LEVEL_WARNING)
+log = logger_type(LEVEL_INFO)
 log1 = logger_type(LEVEL_INFO, id = "Foo")
 log2 = logger_type(LEVEL_TRACE, id = "Bar", colour=COLOUR_GREEN)
 

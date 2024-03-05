@@ -28,7 +28,8 @@ contains
 
         select case(colour)
         case(COLOUR_WHITE)
-            colour_fmt = "[00m"
+            result_str = trim(input_str)
+            return
         case(COLOUR_GREY)
             colour_fmt = "[90m"
         case(COLOUR_RED)

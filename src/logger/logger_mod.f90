@@ -46,7 +46,7 @@ contains
             self%log_level = level
         else
             write(error_unit, '(A)') &
-                "ERROR - oolong__logger_mod_45: Invalid choice for log_level"
+                "ERROR - oolong__logger_mod_49: Invalid choice for log_level"
             stop 1
         end if
 
@@ -62,7 +62,7 @@ contains
                 self%stop_level = stop_level
             else
                 write(error_unit, '(A)') &
-                    "ERROR - oolong__logger_mod_62: Invalid choice for stop_level"
+                    "ERROR - oolong__logger_mod_65: Invalid choice for stop_level"
                 stop 1
             end if
         end if

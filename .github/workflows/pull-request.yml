@@ -18,11 +18,10 @@ jobs:
 
       # Install build dependencies
       - name: Install build dependencies
-        run: |
-          git clone -c feature.manyFiles=true https://github.com/spack/spack.git
-          cd spack/bin
-          ./spack install fpm
-          ./spack load fpm
+        if: ${{ matrix.build == 'fpm' }}
+        uses: fortran-lang/setup-fpm@v3
+        with:
+          fpm-version: 'v0.8.0'
 
       # Build oolong
       - name: Build Oolong with FPM

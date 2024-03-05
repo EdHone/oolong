@@ -16,6 +16,11 @@ module colour_mod
 
 contains
 
+    !> Returns a string with formatting which will change the colour when
+    !> output to the terminal
+    !!
+    !> param[in] input_str The input string to be formatted
+    !> param[in] colour    Enum denoting colour to be changed to
     function change_colour(input_str, colour) result(result_str)
 
         implicit none
@@ -26,22 +31,30 @@ contains
 
         character(len=4) :: colour_fmt
 
+        ! If string tag is too long then colour can't be formatted - call error
+        if (len(trim(input_str)) > len(result_str) - 9) then
+            write(error_unit, '(A)') &
+                "ERROR - oolong_colour_mod_37: Input string too long for colour change"
+            stop 1
+        end if
+
         select case(colour)
         case(COLOUR_WHITE)
-            colour_fmt = "[00m"
+            result_str = trim(input_str)
+            return
         case(COLOUR_GREY)
             colour_fmt = "[90m"
         case(COLOUR_RED)
             colour_fmt = "[91m"
-        case(COLOUR_BLUE)
-            colour_fmt = "[94m"
         case(COLOUR_GREEN)
             colour_fmt = "[92m"
         case(COLOUR_YELLOW)
-            colour_fmt = "[093m"
+            colour_fmt = "[93m"
+        case(COLOUR_BLUE)
+            colour_fmt = "[94m"
         case default
             write(error_unit, '(A)') &
-                "ERROR - oolong_colour_mod_37: Invalid choice for colour change"
+                "ERROR - oolong_colour_mod_57: Invalid choice for colour change"
             stop 1
         end select
 

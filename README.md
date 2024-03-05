@@ -1,4 +1,4 @@
-# oolong
+# Oolong
 
 [![CI](https://github.com/EdHone/oolong/workflows/pull-request/badge.svg)](https://github.com/EdHone/oolong/actions)
 

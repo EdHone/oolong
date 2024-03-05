@@ -11,4 +11,17 @@ The project uses the [Fortran package manager (FPM)](https://github.com/fortran-
 To install Oolong as a static library, run ```fpm install --prefix .```
 
 ## Usage
-The 
+The Oolong logging system can be used from within a Fortran application. The minimum amount of code needed to get started is shown below:
+```fortran
+use oolong, only: logger_type, LEVEL_INFO
+...
+type(logger_type) :: log
+log = logger_type(LEVEL_INFO)
+call log%event("Hello world!", LEVEL_INFO)
+```
+which produces the following output:
+```
+[2024-03-05 14:14:09.573] INFO: Hello world!
+```
+
+More advanced usage can be seen in the ```examples/demo.f90``` file.

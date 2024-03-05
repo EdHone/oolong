@@ -19,8 +19,8 @@ contains
     !> Returns a string with formatting which will change the colour when
     !> output to the terminal
     !!
-    !> param[in] input_str The input string to be formatted
-    !> param[in] colour    Enum denoting colour to be changed to
+    !> @param[in] input_str The input string to be formatted
+    !> @param[in] colour    Enum denoting colour to be changed to
     function change_colour(input_str, colour) result(result_str)
 
         implicit none

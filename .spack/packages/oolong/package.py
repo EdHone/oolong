@@ -5,6 +5,7 @@
 
 from spack.package import *
 import subprocess
+from pathlib import Path
 
 
 class Oolong(Package):
@@ -24,7 +25,15 @@ class Oolong(Package):
     depends_on("fpm")
 
     def setup_build_environment(self, env):
-        env.set("FPM_FC", self.compiler.fc)
+        # For some Cray machines all compilers are wrapped in 'ftn' - look for
+        # gcc in spec instead
+        if Path(self.compiler.fc).parts[-1] == "ftn":
+            if self.spec.satisfies("%gcc"):
+                env.set("FPM_FC", "gfortran")
+            else:
+                env.set("FPM_FC", self.compiler.fc)
+        else:
+            env.set("FPM_FC", self.compiler.fc)
 
     def install(self, spec, prefix):
         subprocess.run(["fpm", "install", "--prefix", "."])

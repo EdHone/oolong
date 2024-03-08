@@ -3,16 +3,17 @@ module logger_mod
 
     use, intrinsic :: iso_fortran_env, only : output_unit, error_unit
 
-    use colour_mod, only: change_colour, COLOUR_WHITE, COLOUR_GREY
-    use levels_mod, only: logger_level_is_valid, get_log_level_str, &
-                          level_is_err, LEVEL_ERROR
+    use abstract_logger_mod, only: abstract_logger_type
+    use colour_mod,          only: change_colour, COLOUR_WHITE, COLOUR_GREY
+    use levels_mod,          only: logger_level_is_valid, get_log_level_str, &
+                                   level_is_err, LEVEL_ERROR
 
     implicit none
 
     private
 
     !> Logger class
-    type, public :: logger_type
+    type, public, extends(abstract_logger_type) :: logger_type
         character(len=16) :: id = "None"
         integer           :: log_level
         integer           :: output_stream

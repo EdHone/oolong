@@ -1,11 +1,17 @@
 program demo
 
-use oolong, only: logger_type, COLOUR_GREEN, LEVEL_ALWAYS, LEVEL_INFO, &
-                  LEVEL_TRACE, LEVEL_WARNING, LEVEL_ERROR
+use oolong, only: abstract_logger_type, logger_type, &
+                  COLOUR_GREEN, &
+                  LEVEL_ALWAYS, LEVEL_INFO, LEVEL_TRACE, LEVEL_WARNING, &
+                  LEVEL_ERROR
 
 implicit none
 
-type(logger_type) :: log, log1, log2
+class(abstract_logger_type), allocatable :: abs_log
+type(logger_type)           :: log, log1, log2
+
+allocate(abs_log, source = logger_type(LEVEL_INFO))
+call abs_log%event("Hello from abstract logger", LEVEL_INFO)
 
 log = logger_type(LEVEL_INFO)
 log1 = logger_type(LEVEL_INFO, id = "Foo")

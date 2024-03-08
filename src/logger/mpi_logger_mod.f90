@@ -1,5 +1,5 @@
 !> Module containing an flexible logger class
-module logger_mod
+module mpi_logger_mod
 
     use, intrinsic :: iso_fortran_env, only : output_unit, error_unit
 
@@ -14,11 +14,12 @@ module logger_mod
     private
 
     !> Logger class
-    type, public, extends(abstract_logger_type) :: logger_type
+    type, public, extends(abstract_logger_type) :: mpi_logger_type
         character(len=16) :: id = "None"
         integer           :: log_level
         integer           :: output_stream
         integer           :: colour_tag = COLOUR_WHITE
+        integer           :: mpi_rank
         logical           :: outputs_to_term
         integer           :: stop_level = LEVEL_ERROR
     contains
@@ -27,19 +28,20 @@ module logger_mod
         procedure         :: all_stop
     end type
 
-    interface logger_type
-        procedure :: logger_constructor
-    end interface logger_type
+    interface mpi_logger_type
+        procedure :: mpi_logger_constructor
+    end interface mpi_logger_type
 
 contains
 
     !> Constructor for the logger object
-    function logger_constructor(level, id, colour, stop_level) result(self)
+    function mpi_logger_constructor(level, id, colour, stop_level, mpi_comm) result(self)
 
         implicit none
 
         type(logger_type)                      :: self
         integer,                    intent(in) :: level
+        integer,                    intent(in) :: mpi_comm
         character(len=*), optional, intent(in) :: id
         integer,          optional, intent(in) :: colour
         integer,          optional, intent(in) :: stop_level
@@ -54,6 +56,7 @@ contains
 
         self%output_stream = output_unit
         self%outputs_to_term = isatty(self%output_stream)
+        self%mpi_comm = mpi_comm
 
         if (present(id)) self%id = trim(id)
         if (present(colour)) self%colour_tag = colour
@@ -153,4 +156,4 @@ contains
 
     end subroutine all_stop
 
-end module logger_mod
+end module mpi_logger_mod

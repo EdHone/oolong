@@ -18,5 +18,8 @@ implicit-typing = false
 implicit-external = false
 source-form = "free"
 
+[preprocess]
+[preprocess.cpp]
+
 [dependencies]
 test-drive = {git = "https://github.com/fortran-lang/test-drive"}

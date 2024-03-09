@@ -39,7 +39,7 @@ contains
 
         implicit none
 
-        type(logger_type)                      :: self
+        type(mpi_logger_type)                      :: self
         integer,                    intent(in) :: level
         integer,                    intent(in) :: mpi_comm
         character(len=*), optional, intent(in) :: id
@@ -56,7 +56,7 @@ contains
 
         self%output_stream = output_unit
         self%outputs_to_term = isatty(self%output_stream)
-        self%mpi_comm = mpi_comm
+        !self%mpi_comm = mpi_comm
 
         if (present(id)) self%id = trim(id)
         if (present(colour)) self%colour_tag = colour
@@ -72,7 +72,7 @@ contains
             end if
         end if
 
-    end function logger_constructor
+    end function mpi_logger_constructor
 
     !> Calls a logging event
     !!
@@ -82,7 +82,7 @@ contains
 
         implicit none
 
-        class(logger_type), intent(inout) :: self
+        class(mpi_logger_type), intent(inout) :: self
         character(len=*),   intent(in)    :: message
         integer,            intent(in)    :: level
 
@@ -126,7 +126,7 @@ contains
 
         implicit none
 
-        class(logger_type), intent(inout) :: self
+        class(mpi_logger_type), intent(inout) :: self
         integer,            intent(in)    :: level
 
         character(len=32) :: result_string, fmt_tag_str
@@ -150,7 +150,7 @@ contains
 
         implicit none
 
-        class(logger_type), intent(inout) :: self
+        class(mpi_logger_type), intent(inout) :: self
 
         stop 1
 

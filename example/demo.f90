@@ -13,6 +13,10 @@ type(logger_type)           :: log, log1, log2
 allocate(abs_log, source = logger_type(LEVEL_INFO))
 call abs_log%event("Hello from abstract logger", LEVEL_INFO)
 
+#if defined(MPI)
+print*, "MPI"
+#endif
+
 log = logger_type(LEVEL_INFO)
 log1 = logger_type(LEVEL_INFO, id = "Foo")
 log2 = logger_type(LEVEL_TRACE, id = "Bar", colour=COLOUR_GREEN)

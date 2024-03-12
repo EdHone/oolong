@@ -24,6 +24,7 @@ module mpi_logger_mod
         integer           :: mpi_comm
         integer           :: mpi_rank
         logical           :: outputs_to_term
+        logical           :: root_rank_only
         integer           :: stop_level = LEVEL_ERROR
     contains
         procedure, public :: event
@@ -39,7 +40,7 @@ contains
 
     !> Constructor for the logger object
     function mpi_logger_constructor( level, mpi_comm, mpi_rank, id, colour, &
-                                     stop_level ) result(self)
+                                     stop_level, root_rank_only ) result(self)
 
         implicit none
 
@@ -50,6 +51,7 @@ contains
         character(len=*), optional, intent(in) :: id
         integer,          optional, intent(in) :: colour
         integer,          optional, intent(in) :: stop_level
+        logical,          optional, intent(in) :: root_rank_only
 
         if (logger_level_is_valid(level)) then
             self%log_level = level
@@ -78,6 +80,12 @@ contains
             end if
         end if
 
+        if (present(root_rank_only)) then
+            self%root_rank_only = root_rank_only
+        else
+            self%root_rank_only = .false.
+        end if
+
     end function mpi_logger_constructor
 
     !> Calls a logging event
@@ -99,6 +107,7 @@ contains
         integer :: log_out
 
         if (self%log_level > level) return
+        if (self%root_rank_only .and. self%mpi_rank /= 0) return
 
         dt_str = datetime_string()
         info_str = self%format_info(level)

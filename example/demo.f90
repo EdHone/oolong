@@ -59,7 +59,8 @@ subroutine mpi_log_demo()
     call mpi_log1%event("Hello from logger 1", LEVEL_INFO)
 
     mpi_log2 = mpi_logger_type( LEVEL_INFO, mpi_comm_world, comm_rank, &
-                                id="Log 2", colour=COLOUR_GREEN )
+                                id="Log 2", colour=COLOUR_GREEN,       &
+                                root_rank_only=.true. )
     call mpi_log2%event("Hello from logger 2", LEVEL_INFO)
 
     call mpi_log1%event("TEST ERROR", LEVEL_ERROR)

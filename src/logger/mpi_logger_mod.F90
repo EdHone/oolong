@@ -1,7 +1,9 @@
 !> Module containing an flexible logger class
 module mpi_logger_mod
+#if defined(MPI)
 
     use, intrinsic :: iso_fortran_env, only : output_unit, error_unit
+    use mpi, only : mpi_abort, MPI_COMM_WORLD
 
     use abstract_logger_mod, only: abstract_logger_type
     use colour_mod,          only: change_colour, COLOUR_WHITE, COLOUR_GREY
@@ -156,4 +158,5 @@ contains
 
     end subroutine all_stop
 
+#endif
 end module mpi_logger_mod

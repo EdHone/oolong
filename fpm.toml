@@ -9,6 +9,7 @@ auto-executables = true
 auto-tests = true
 auto-examples = true
 module-naming = false
+external-modules = "mpi"
 
 [install]
 library = true
@@ -20,6 +21,8 @@ source-form = "free"
 
 [preprocess]
 [preprocess.cpp]
+suffixes = ["F90"]
+# Activate MPI macro to enable MPI logging support (requires installed MPI)
 
 [dependencies]
 test-drive = {git = "https://github.com/fortran-lang/test-drive"}

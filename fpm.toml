@@ -10,6 +10,8 @@ auto-tests = true
 auto-examples = true
 module-naming = false
 external-modules = "mpi"
+# Needs to be activated for MPI build
+#link = ["mpi", "mpi_mpifh"]
 
 [install]
 library = true

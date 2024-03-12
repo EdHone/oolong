@@ -19,5 +19,8 @@ module oolong
               COLOUR_GREEN, COLOUR_YELLOW
     public :: LEVEL_ALWAYS, LEVEL_ERROR, LEVEL_WARNING, LEVEL_INFO, &
               LEVEL_DEBUG, LEVEL_TRACE
+#if defined(MPI)
+    public :: mpi_logger_type
+#endif
 
 end module oolong

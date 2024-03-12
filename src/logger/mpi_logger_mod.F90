@@ -38,13 +38,15 @@ module mpi_logger_mod
 contains
 
     !> Constructor for the logger object
-    function mpi_logger_constructor(level, id, colour, stop_level, mpi_comm) result(self)
+    function mpi_logger_constructor( level, mpi_comm, mpi_rank, id, colour, &
+                                     stop_level ) result(self)
 
         implicit none
 
-        type(mpi_logger_type)                      :: self
+        type(mpi_logger_type)                  :: self
         integer,                    intent(in) :: level
         integer,                    intent(in) :: mpi_comm
+        integer,                    intent(in) :: mpi_rank
         character(len=*), optional, intent(in) :: id
         integer,          optional, intent(in) :: colour
         integer,          optional, intent(in) :: stop_level
@@ -136,16 +138,16 @@ contains
         character(len=32) :: result_string, fmt_tag_str
 
         if (trim(self%id) == "None") then
-            write( result_string, '(" ", A)' ) &
-                trim(get_log_level_str(level))
+            write( result_string, '("[P", I0, "] ", A)' ) &
+                self%mpi_rank, trim(get_log_level_str(level))
         else
             if (self%outputs_to_term) then
                 fmt_tag_str = change_colour(trim(self%id), self%colour_tag)
             else
                 fmt_tag_str = trim(self%id)
             end if
-            write( result_string, '("[", A,"] ", A)' ) &
-                trim(fmt_tag_str), trim(get_log_level_str(level))
+            write( result_string, '("[P", I0, "][", A,"] ", A)' ) &
+                 self%mpi_rank, trim(fmt_tag_str),trim(get_log_level_str(level))
         end if
 
     end function format_info

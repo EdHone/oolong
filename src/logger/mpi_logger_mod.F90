@@ -3,7 +3,7 @@ module mpi_logger_mod
 #if defined(MPI)
 
     use, intrinsic :: iso_fortran_env, only : output_unit, error_unit
-    use mpi, only : mpi_abort, MPI_COMM_WORLD
+    use mpi, only : mpi_abort
 
     use abstract_logger_mod, only: abstract_logger_type
     use colour_mod,          only: change_colour, COLOUR_WHITE, COLOUR_GREY
@@ -21,6 +21,7 @@ module mpi_logger_mod
         integer           :: log_level
         integer           :: output_stream
         integer           :: colour_tag = COLOUR_WHITE
+        integer           :: mpi_comm
         integer           :: mpi_rank
         logical           :: outputs_to_term
         integer           :: stop_level = LEVEL_ERROR
@@ -58,7 +59,8 @@ contains
 
         self%output_stream = output_unit
         self%outputs_to_term = isatty(self%output_stream)
-        !self%mpi_comm = mpi_comm
+        self%mpi_comm = mpi_comm
+        self%mpi_rank = mpi_rank
 
         if (present(id)) self%id = trim(id)
         if (present(colour)) self%colour_tag = colour
@@ -153,8 +155,9 @@ contains
         implicit none
 
         class(mpi_logger_type), intent(inout) :: self
+        integer :: ierr
 
-        stop 1
+        call mpi_abort(self%mpi_comm, 1, ierr)
 
     end subroutine all_stop
 

@@ -1,5 +1,17 @@
 # Oolong
 
+<div align="left">
+
+<h2>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://cdn.rawgit.com/edhone/oolong/main/.github/logo/oolong_dark.png" width="250">
+  <source media="(prefers-color-scheme: light)" srcset="https://cdn.rawgit.com/edhone/oolong/main/.github/logo/oolong_light.png" width="250">
+</picture>
+
+<br>
+<br clear="all">
+
+
 [![CI](https://github.com/EdHone/oolong/workflows/pull-request/badge.svg)](https://github.com/EdHone/oolong/actions)
 
 ## Getting started

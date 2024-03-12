@@ -22,7 +22,11 @@ class Oolong(Package):
     version("head", branch="main")
     version("0.1.0", sha256="278e5fed51c4bb64454b623f1c53b209b1a772eb6ad1172e18a4b60e59d606a7")
 
+    variant("mpi", default=False, description="Enable parallel logging")
+
     depends_on("fpm")
+    depends_on("mpi", when="+mpi")
+
 
     def setup_build_environment(self, env):
         # For some Cray machines all compilers are wrapped in 'ftn' - look for
@@ -34,6 +38,10 @@ class Oolong(Package):
                 env.set("FPM_FC", self.compiler.fc)
         else:
             env.set("FPM_FC", self.compiler.fc)
+
+        if self.spec.satisfies("+mpi"):
+            env.set("FPM_FFLAGS", f"-DMPI -L{self.spec['mpi'].prefix}/lib")
+            env.set("FPM_LDFLAGS", f"-L{self.spec['mpi'].prefix}/lib")
 
     def install(self, spec, prefix):
         subprocess.run(["fpm", "install", "--prefix", "."])

@@ -1,7 +1,9 @@
 !> Module containing an flexible logger class
-module logger_mod
+module mpi_logger_mod
+#if defined(MPI)
 
     use, intrinsic :: iso_fortran_env, only : output_unit, error_unit
+    use mpi, only : mpi_abort
 
     use abstract_logger_mod, only: abstract_logger_type
     use colour_mod,          only: change_colour, COLOUR_WHITE, COLOUR_GREY
@@ -14,12 +16,15 @@ module logger_mod
     private
 
     !> Logger class
-    type, public, extends(abstract_logger_type) :: logger_type
+    type, public, extends(abstract_logger_type) :: mpi_logger_type
         character(len=16) :: id = "None"
         integer           :: log_level
         integer           :: output_stream
         integer           :: colour_tag = COLOUR_WHITE
+        integer           :: mpi_comm
+        integer           :: mpi_rank
         logical           :: outputs_to_term
+        logical           :: root_rank_only
         integer           :: stop_level = LEVEL_ERROR
     contains
         procedure, public :: event
@@ -27,22 +32,26 @@ module logger_mod
         procedure         :: all_stop
     end type
 
-    interface logger_type
-        procedure :: logger_constructor
-    end interface logger_type
+    interface mpi_logger_type
+        procedure :: mpi_logger_constructor
+    end interface mpi_logger_type
 
 contains
 
     !> Constructor for the logger object
-    function logger_constructor(level, id, colour, stop_level) result(self)
+    function mpi_logger_constructor( level, mpi_comm, mpi_rank, id, colour, &
+                                     stop_level, root_rank_only ) result(self)
 
         implicit none
 
-        type(logger_type)                      :: self
+        type(mpi_logger_type)                  :: self
         integer,                    intent(in) :: level
+        integer,                    intent(in) :: mpi_comm
+        integer,                    intent(in) :: mpi_rank
         character(len=*), optional, intent(in) :: id
         integer,          optional, intent(in) :: colour
         integer,          optional, intent(in) :: stop_level
+        logical,          optional, intent(in) :: root_rank_only
 
         if (logger_level_is_valid(level)) then
             self%log_level = level
@@ -54,6 +63,8 @@ contains
 
         self%output_stream = output_unit
         self%outputs_to_term = isatty(self%output_stream)
+        self%mpi_comm = mpi_comm
+        self%mpi_rank = mpi_rank
 
         if (present(id)) self%id = trim(id)
         if (present(colour)) self%colour_tag = colour
@@ -69,7 +80,13 @@ contains
             end if
         end if
 
-    end function logger_constructor
+        if (present(root_rank_only)) then
+            self%root_rank_only = root_rank_only
+        else
+            self%root_rank_only = .false.
+        end if
+
+    end function mpi_logger_constructor
 
     !> Calls a logging event
     !!
@@ -79,7 +96,7 @@ contains
 
         implicit none
 
-        class(logger_type), intent(inout) :: self
+        class(mpi_logger_type), intent(inout) :: self
         character(len=*),   intent(in)    :: message
         integer,            intent(in)    :: level
 
@@ -90,6 +107,7 @@ contains
         integer :: log_out
 
         if (self%log_level > level) return
+        if (self%root_rank_only .and. self%mpi_rank /= 0) return
 
         dt_str = datetime_string()
         info_str = self%format_info(level)
@@ -123,22 +141,22 @@ contains
 
         implicit none
 
-        class(logger_type), intent(inout) :: self
+        class(mpi_logger_type), intent(inout) :: self
         integer,            intent(in)    :: level
 
         character(len=32) :: result_string, fmt_tag_str
 
         if (trim(self%id) == "None") then
-            write( result_string, '(" ", A)' ) &
-                trim(get_log_level_str(level))
+            write( result_string, '("[P", I0, "] ", A)' ) &
+                self%mpi_rank, trim(get_log_level_str(level))
         else
             if (self%outputs_to_term) then
                 fmt_tag_str = change_colour(trim(self%id), self%colour_tag)
             else
                 fmt_tag_str = trim(self%id)
             end if
-            write( result_string, '("[", A,"] ", A)' ) &
-                trim(fmt_tag_str), trim(get_log_level_str(level))
+            write( result_string, '("[P", I0, "][", A,"] ", A)' ) &
+                 self%mpi_rank, trim(fmt_tag_str),trim(get_log_level_str(level))
         end if
 
     end function format_info
@@ -147,10 +165,12 @@ contains
 
         implicit none
 
-        class(logger_type), intent(inout) :: self
+        class(mpi_logger_type), intent(inout) :: self
+        integer :: ierr
 
-        stop 1
+        call mpi_abort(self%mpi_comm, 1, ierr)
 
     end subroutine all_stop
 
-end module logger_mod
+#endif
+end module mpi_logger_mod

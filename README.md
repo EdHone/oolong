@@ -1,14 +1,10 @@
 <div align="left">
 
-<h2>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://cdn.rawgit.com/edhone/oolong/main/.github/logo/oolong_dark.png" width="360">
   <source media="(prefers-color-scheme: light)" srcset="https://cdn.rawgit.com/edhone/oolong/main/.github/logo/oolong_light.png" width="360">
   <img alt="Oolong" src="https://cdn.rawgit.com/edhone/oolong/main/.github/logo/oolong_light.png" width="360">
 </picture>
-
-<br>
-<br clear="all">
 
 
 [![CI](https://github.com/EdHone/oolong/workflows/pull-request/badge.svg)](https://github.com/EdHone/oolong/actions)

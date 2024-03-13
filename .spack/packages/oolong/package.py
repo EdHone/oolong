@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 class Oolong(Package):
-    """An object oriented logging system for modern Fortran applications."""
+    """A lightweight, object-oriented logging system for modern Fortran applications."""
 
     homepage = "https://github.com/EdHone/oolong"
     url = "https://github.com/EdHone/oolong/archive/refs/tags/v0.1.0.tar.gz"
@@ -17,20 +17,20 @@ class Oolong(Package):
 
     maintainers("EdHone")
 
-    license("BSD-3-Clause", checked_by="EdHone")
+    license("BSD-3-Clause")
 
     version("head", branch="main")
     version("0.1.0", sha256="278e5fed51c4bb64454b623f1c53b209b1a772eb6ad1172e18a4b60e59d606a7")
 
     variant("mpi", default=False, description="Enable parallel logging")
 
-    depends_on("fpm")
+    depends_on("fpm@0.8:")
     depends_on("mpi", when="+mpi")
 
 
     def setup_build_environment(self, env):
         # For some Cray machines all compilers are wrapped in 'ftn' - look for
-        # gcc in spec instead
+        # gcc in spec instead to get flags right
         if Path(self.compiler.fc).parts[-1] == "ftn":
             if self.spec.satisfies("%gcc"):
                 env.set("FPM_FC", "gfortran")

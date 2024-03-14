@@ -40,7 +40,7 @@ class Oolong(Package):
             env.set("FPM_FC", self.compiler.fc)
 
         if self.spec.satisfies("+mpi"):
-            env.set("FPM_FFLAGS", f"-DMPI -L{self.spec['mpi'].prefix}/lib")
+            env.set("FPM_FFLAGS", f"-DMPI -I{self.spec['mpi'].prefix}/lib")
             env.set("FPM_LDFLAGS", f"-L{self.spec['mpi'].prefix}/lib")
 
     def install(self, spec, prefix):

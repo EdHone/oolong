@@ -3,9 +3,10 @@
 #
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
-from spack.package import *
 import subprocess
 from pathlib import Path
+
+from spack.package import *
 
 
 class Oolong(Package):
@@ -24,9 +25,8 @@ class Oolong(Package):
 
     variant("mpi", default=False, description="Enable parallel logging")
 
-    depends_on("fpm@0.8:")
+    depends_on("fpm@0.8:", type="build")
     depends_on("mpi", when="+mpi")
-
 
     def setup_build_environment(self, env):
         # For some Cray machines all compilers are wrapped in 'ftn' - look for
@@ -47,4 +47,3 @@ class Oolong(Package):
         subprocess.run(["fpm", "install", "--prefix", "."])
         install_tree("lib", prefix.lib)
         install_tree("include", prefix.include)
-

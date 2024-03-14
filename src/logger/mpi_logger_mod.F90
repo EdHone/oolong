@@ -1,4 +1,4 @@
-!> Module containing an flexible logger class
+!> Module containing a parallel logger class with MPI integration
 module mpi_logger_mod
 #if defined(MPI)
 
@@ -15,7 +15,7 @@ module mpi_logger_mod
 
     private
 
-    !> Logger class
+    !> MPI parallel logger class
     type, public, extends(abstract_logger_type) :: mpi_logger_type
         character(len=16) :: id = "None"
         integer           :: log_level
@@ -38,7 +38,7 @@ module mpi_logger_mod
 
 contains
 
-    !> Constructor for the logger object
+    !> Constructor for the MPI logger object
     function mpi_logger_constructor( level, mpi_comm, mpi_rank, id, colour, &
                                      stop_level, root_rank_only ) result(self)
 
@@ -161,6 +161,7 @@ contains
 
     end function format_info
 
+    !> An interface to halt the model if an error is called
     subroutine all_stop(self)
 
         implicit none

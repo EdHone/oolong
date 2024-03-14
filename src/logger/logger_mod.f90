@@ -143,6 +143,7 @@ contains
 
     end function format_info
 
+    !> An interface to halt the model if an error is called
     subroutine all_stop(self)
 
         implicit none

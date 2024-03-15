@@ -29,19 +29,15 @@ class Oolong(Package):
     depends_on("mpi", when="+mpi")
 
     def setup_build_environment(self, env):
-        # For some Cray machines all compilers are wrapped in 'ftn' - look for
-        # gcc in spec instead to get flags right
-        if Path(self.compiler.fc).parts[-1] == "ftn":
-            if self.spec.satisfies("%gcc"):
-                env.set("FPM_FC", "gfortran")
-            else:
-                env.set("FPM_FC", self.compiler.fc)
+        if self.spec.satisfies("+mpi"):
+            env.set("FPM_FC", self.spec["mpi"].mpifc)
+            env.set("FPM_FFLAGS", f"-DMPI")
+        elif Path(self.compiler.fc).parts[-1] == "ftn" and self.spec.satisfies("%gcc"):
+            # For some Cray machines all compilers are wrapped in 'ftn' - look for
+            # gcc in spec instead to get flags right
+            env.set("FPM_FC", "gfortran")
         else:
             env.set("FPM_FC", self.compiler.fc)
-
-        if self.spec.satisfies("+mpi"):
-            env.set("FPM_FFLAGS", f"-DMPI -lmpi -lmpi_mpifh -I{self.spec['mpi'].prefix}/lib")
-            env.set("FPM_LDFLAGS", f"-L{self.spec['mpi'].prefix}/lib")
 
     def install(self, spec, prefix):
         subprocess.run(["fpm", "install", "--prefix", "."])
